@@ -1,0 +1,22 @@
+{
+  "name": "project-news-explorer-backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/biancabaccin/project-news-explorer-backend#readme",
+  "bugs": {
+    "url": "https://github.com/biancabaccin/project-news-explorer-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biancabaccin/project-news-explorer-backend.git"
+  },
+  "license": "ISC",
+  "author": "Bianca Baccin",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
