@@ -4,5 +4,17 @@
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     "no-console": "off",
     "linebreak-style": "off",
+
+    "no-warning-comments": [
+      "error",
+      {
+        "terms": [
+          "eslint-disable",
+          "eslint-disable-line",
+          "eslint-disable-next-line",
+        ],
+        "location": "anywhere",
+      },
+    ],
   },
 }
