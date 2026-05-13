@@ -8,13 +8,16 @@ const { errors } = require("celebrate");
 const routes = require("./routes");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
+const rateLimiter = require("./middlewares/rateLimiter");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
 app.use(express.json());
 
 app.use(requestLogger);
+
+app.use(rateLimiter);
 
 app.use("/", routes);
 
