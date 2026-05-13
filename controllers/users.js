@@ -3,21 +3,24 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
-module.exports.getMe = async (req, res) => {
+module.exports.getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select("email name");
 
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
+      const err = new Error("User not found");
 
+      err.statusCode = 404;
+
+      return next(err);
+    }
     return res.status(200).send(user);
   } catch (err) {
-    return res.status(500).send({ message: "Server error" });
+    return next(err);
   }
 };
 
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
 
@@ -35,41 +38,40 @@ module.exports.createUser = async (req, res) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).send({
-        message: "Email already exists",
-      });
+      err.statusCode = 409;
+      err.message = "Email already exists";
     }
 
     if (err.name === "ValidationError") {
-      return res.status(400).send({
-        message: "Validation error",
-      });
+      err.statusCode = 400;
     }
 
-    return res.status(500).send({
-      message: "Server error",
-    });
+    return next(err);
   }
 };
 
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return res.status(401).send({
-        message: "Incorrect email or password",
-      });
+      const err = new Error("Incorrect email or password");
+
+      err.statusCode = 401;
+
+      return next(err);
     }
 
     const matched = await bcrypt.compare(password, user.password);
 
     if (!matched) {
-      return res.status(401).send({
-        message: "Incorrect email or password",
-      });
+      const err = new Error("Incorrect email or password");
+
+      err.statusCode = 401;
+
+      return next(err);
     }
 
     const { NODE_ENV, JWT_SECRET } = process.env;
@@ -82,8 +84,6 @@ module.exports.login = async (req, res) => {
 
     return res.send({ token });
   } catch (err) {
-    return res.status(500).send({
-      message: "Server error",
-    });
+    return next(err);
   }
 };

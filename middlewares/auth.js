@@ -4,7 +4,11 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return res.status(401).send({ message: "Authorization required" });
+    const err = new Error("Authorization required");
+
+    err.statusCode = 401;
+
+    return next(err);
   }
 
   const token = authorization.replace("Bearer ", "");
@@ -17,6 +21,9 @@ module.exports = (req, res, next) => {
     req.user = payload;
     return next();
   } catch (err) {
-    return res.status(401).send({ message: "Invalid token" });
+    err.statusCode = 401;
+    err.message = "Invalid token";
+
+    return next(err);
   }
 };
