@@ -17,7 +17,7 @@ const articleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  fonte: {
+  source: {
     type: String,
     required: true,
   },

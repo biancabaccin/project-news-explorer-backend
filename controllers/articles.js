@@ -38,14 +38,13 @@ module.exports.deleteArticle = async (req, res, next) => {
       return next(err);
     }
 
-    if (article.owner.toString() !== req.user._id) {
+    if (!article.owner.equals(req.user._id)) {
       const err = new Error("Forbidden");
 
       err.statusCode = 403;
 
       return next(err);
     }
-
     await article.deleteOne();
 
     return res.send({ message: "Article deleted" });
