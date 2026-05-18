@@ -13,6 +13,34 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
+const allowedCors = [
+  "https://project-news-explorer-frontend.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
+const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS";
+
+app.use(function (req, res, next) {
+  const { origin } = req.headers;
+  const { method } = req;
+
+  if (allowedCors.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Credentials", "true");
+  }
+
+  res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
+
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use(express.json());
 
 app.use(requestLogger);
